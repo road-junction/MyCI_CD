@@ -54,7 +54,7 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_COLOR: ${{ job.status }}
-          SLACK_MESSAGE: "wwwww success \n a.Name:WANR RUIJUN \n b. Matriculation number: A0286032J\n c. Email E1221844@u.nus.edu\nd. Repository: Github: https://githun.com/${{ github.repository }}\n e. Image:https://hub.docker.com/repository/docker/rjrjw/mycicd/general"
+          SLACK_MESSAGE: "wwwww success \n a. Name: WANG RUIJUN \n b. Matriculation number: A0286032J\n c. Email: E1221844@u.nus.edu\n d. Repository: Github: https://github.com/${{ github.repository }}\n e. Image: Docker: https://hub.docker.com/repository/docker/rjrjw/mycicd/general"
           SLACK_TITLE: Post Title
           SLACK_WEBHOOK: ${{ secrets.WEB_HOOK }}
 
