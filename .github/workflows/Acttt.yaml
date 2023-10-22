@@ -1,0 +1,79 @@
+name: wwwwww
+on:
+  push:
+    branches:
+      - 'v[0-9]+.[0-9]'
+
+jobs: 
+  scan:
+    if: ${{ !startsWith(github.event.head_commit.message, '#NORUN') }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Trivy vulnerability scanner in repo mode
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          ignore-unfixed: true
+          format: 'table'
+          output: 'trivy-results.txt'
+          severity: 'CRITICAL'
+          exit-code: '1'
+          
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3.1.1    
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      -
+        name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: rjrjw/mycicd:${{ github.sha }}
+
+      - name: Sign image with a key
+        run: |
+          cosign sign --yes --key env://COSIGN_PRIVATE_KEY "rjrjw/mycicd:${{ github.sha }}"
+        env:
+          COSIGN_PRIVATE_KEY: ${{ secrets.PRIVAT_KEY }}
+
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_MESSAGE: "wwwww success \n a. Name: WANG RUIJUN \n b. Matriculation number: A0286032J\n c. Email: E1221844@u.nus.edu\n d. Repository: Github: https://github.com/${{ github.repository }}\n e. Image: Docker: https://hub.docker.com/repository/docker/rjrjw/mycicd/general"
+          SLACK_TITLE: Post Title
+          SLACK_WEBHOOK: ${{ secrets.WEB_HOOK }}
+
+      - name: Slack Notification
+        if: ${{ failure() }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_MESSAGE: 'wwwww failed'
+          SLACK_TITLE: Post Title
+          SLACK_WEBHOOK: ${{ secrets.WEB_HOOK }}
+
+      - name: Upload TXT file
+        if: ${{ failure() }}
+        uses: MeilCli/slack-upload-file@v3
+        with:
+          slack_token: ${{ secrets.SLACK_TOKEN }}
+          channel_id: ${{ secrets.SLACK_CHANNEL_ID }}
+          file_path: './trivy-results.txt'
+          initial_comment: 'post by slack-upload-file'
+
+          
