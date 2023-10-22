@@ -19,7 +19,7 @@ jobs:
           scan-type: 'fs'
           ignore-unfixed: true
           format: 'table'
-          output: 'trivy-results.sarif'
+          output: 'trivy-results.txt'
           severity: 'CRITICAL, HIGH'
           exit-code: '1'
 
@@ -32,7 +32,17 @@ jobs:
           SLACK_TITLE: Post Title
           SLACK_WEBHOOK: ${{ secrets.WEB_HOOK }}
 
-
+      - name: Upload TXT file
+        uses: MeilCli/slack-upload-file@v3
+        with:
+          slack_token: ${{ secrets.SLACK_TOKEN }}
+          channel_id: ${{ secrets.SLACK_CHANNEL_ID }}
+          content: 'file content'
+          file_type: 'text'
+          file_name: 'trivy-results.txt'
+          title: 'title of file'
+          initial_comment: 'post by slack-upload-file'
+          # thread_ts: 'option'
 
          
           
