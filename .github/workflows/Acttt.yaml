@@ -23,6 +23,9 @@ jobs:
           severity: 'CRITICAL'
           exit-code: '1'
           
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3.1.1    
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       -
@@ -41,6 +44,20 @@ jobs:
           push: true
           tags: rjrjw/mycicd:${{ github.sha }}
 
+      - name: Sign image with a key
+        run: |
+          cosign sign --yes --key env://COSIGN_PRIVATE_KEY "${TAGS}@${DIGEST}"
+        env:
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+
+      - name: wwwwww
+        run: cosign generate-key-pair
+
+      - name: show key
+        run: Cat cosign.key
+
+      - name: show cert
+        run: Cat cosign.pub     
 
       - name: Slack Notification
         if: ${{ failure() }}
