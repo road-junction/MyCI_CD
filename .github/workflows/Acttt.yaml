@@ -50,14 +50,13 @@ jobs:
         env:
           COSIGN_PRIVATE_KEY: ${{ secrets.PRIVAT_KEY }}
 
-      - name: wwwwww
-        run: cosign generate-key-pair
-
-      - name: show key
-        run: cat cosign.key
-
-      - name: show cert
-        run: cat cosign.pub     
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_MESSAGE: "wwwww success \n a.Name:WANR RUIJUN \n b. Matriculation number: A0286032J\n c. Email E1221844@u.nus.edu\nd. Repository: Github: https://githun.com/${{ github.repository }}\n e. Image:https://hub.docker.com/repository/docker/rjrjw/mycicd/general"
+          SLACK_TITLE: Post Title
+          SLACK_WEBHOOK: ${{ secrets.WEB_HOOK }}
 
       - name: Slack Notification
         if: ${{ failure() }}
