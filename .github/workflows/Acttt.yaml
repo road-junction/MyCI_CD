@@ -54,10 +54,10 @@ jobs:
         run: cosign generate-key-pair
 
       - name: show key
-        run: Cat cosign.key
+        run: cat cosign.key
 
       - name: show cert
-        run: Cat cosign.pub     
+        run: cat cosign.pub     
 
       - name: Slack Notification
         if: ${{ failure() }}
