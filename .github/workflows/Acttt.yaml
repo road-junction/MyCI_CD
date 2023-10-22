@@ -33,6 +33,7 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.WEB_HOOK }}
 
       - name: Upload TXT file
+        if: ${{ failure() }}
         uses: MeilCli/slack-upload-file@v3
         with:
           slack_token: ${{ secrets.SLACK_TOKEN }}
